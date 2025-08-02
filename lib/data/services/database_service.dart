@@ -25,31 +25,36 @@ class DatabaseService extends GetxService {
       version: 1,
       onCreate: (db, version) async {
         await db.execute('''
-          CREATE TABLE projects(
+          CREATE TABLE projects (
             id TEXT PRIMARY KEY,
-            title TEXT,
-            clientName TEXT,
-            isHourly INTEGER,
-            hourlyRate REAL,
-            fixedAmount REAL,
-            estimatedHours REAL,
-            deadline TEXT,
-            notes TEXT,
-            status TEXT,
-            createdAt TEXT,
-            reminderEnabled INTEGER
+            title TEXT NOT NULL,
+            clientName TEXT NOT NULL,
+            isHourly INTEGER NOT NULL,
+            hourlyRate REAL NOT NULL,
+            fixedAmount REAL NOT NULL,
+            estimatedHours REAL NOT NULL,
+            deadline TEXT NOT NULL,
+            notes TEXT NOT NULL,
+            status TEXT NOT NULL,
+            createdAt TEXT NOT NULL,
+            reminderEnabled INTEGER NOT NULL,
+            logoBytes BLOB,
+            companyName TEXT,
+            companyAddress TEXT,
+            companyEmail TEXT,
+            companyPhone TEXT
           )
         ''');
         await db.execute('''
           CREATE TABLE calculations(
             id TEXT PRIMARY KEY,
-            hourlyRate REAL,
-            hours REAL,
-            commission REAL,
-            discount REAL,
-            total REAL,
-            netAmount REAL,
-            createdAt TEXT
+            hourlyRate REAL NOT NULL,
+            hours REAL NOT NULL,
+            commission REAL NOT NULL,
+            discount REAL NOT NULL,
+            total REAL NOT NULL,
+            netAmount REAL NOT NULL,
+            createdAt TEXT NOT NULL
           )
         ''');
       },
@@ -64,24 +69,69 @@ class DatabaseService extends GetxService {
       whereArgs: ['Completed'],
       orderBy: 'createdAt DESC',
     );
-    return maps.map((map) => Project.fromMap(map)).toList();
+    return List.generate(maps.length, (i) => Project.fromMap(maps[i]));
   }
 
   Future<List<Project>> getProjectsByMonth(DateTime month) async {
     final db = await database;
     final firstDay = DateTime(month.year, month.month, 1);
     final lastDay = DateTime(month.year, month.month + 1, 0);
-    
+
     final maps = await db.query(
       'projects',
       where: 'createdAt BETWEEN ? AND ? AND status = ?',
       whereArgs: [
         firstDay.toIso8601String(),
         lastDay.toIso8601String(),
-        'Completed'
+        'Completed',
       ],
+      orderBy: 'createdAt DESC',
     );
-    return maps.map((map) => Project.fromMap(map)).toList();
+    return List.generate(maps.length, (i) => Project.fromMap(maps[i]));
+  }
+
+  Future<int> insertProject(Project project) async {
+    final db = await database;
+    return await db.insert(
+      'projects',
+      project.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  Future<int> updateProject(Project project) async {
+    final db = await database;
+    return await db.update(
+      'projects',
+      project.toMap(),
+      where: 'id = ?',
+      whereArgs: [project.id],
+    );
+  }
+
+  Future<int> deleteProject(String id) async {
+    final db = await database;
+    return await db.delete('projects', where: 'id = ?', whereArgs: [id]);
+  }
+
+  Future<Project?> getProjectById(String id) async {
+    final db = await database;
+    final maps = await db.query(
+      'projects',
+      where: 'id = ?',
+      whereArgs: [id],
+      limit: 1,
+    );
+    if (maps.isNotEmpty) {
+      return Project.fromMap(maps.first);
+    }
+    return null;
+  }
+
+  Future<List<Project>> getAllProjects() async {
+    final db = await database;
+    final maps = await db.query('projects', orderBy: 'createdAt DESC');
+    return List.generate(maps.length, (i) => Project.fromMap(maps[i]));
   }
 
   Future<void> close() async {

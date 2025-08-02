@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import '../../../../../data/models/project_model.dart';
 import '../../controllers/projects_controller.dart';
+import 'dart:math' show pi;
 
 class ProjectFormView extends StatefulWidget {
   final Project? project;
 
-  const ProjectFormView({this.project, Key? key}) : super(key: key);
+  const ProjectFormView({this.project, super.key});
 
   @override
   _ProjectFormViewState createState() => _ProjectFormViewState();
@@ -24,7 +27,7 @@ class _ProjectFormViewState extends State<ProjectFormView> {
   final _notesController = TextEditingController();
   final _isHourly = true.obs;
   final _status = 'Ongoing'.obs;
-  final _deadline = DateTime.now().add(Duration(days: 7)).obs;
+  final _deadline = DateTime.now().add(const Duration(days: 7)).obs;
 
   ProjectsController get controller => Get.find();
 
@@ -62,6 +65,32 @@ class _ProjectFormViewState extends State<ProjectFormView> {
       initialDate: _deadline.value,
       firstDate: DateTime.now(),
       lastDate: DateTime(2101),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: Theme.of(context).colorScheme.copyWith(
+              primary: Theme.of(context).colorScheme.primary,
+              onPrimary: Colors.white,
+              surface: Colors.grey[50],
+              onSurface: Colors.grey[900],
+            ),
+            textTheme: TextTheme(
+              bodyMedium: GoogleFonts.poppins(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                color: Colors.grey[900],
+              ),
+              titleMedium: GoogleFonts.poppins(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: Colors.grey[900],
+              ),
+            ),
+            dialogBackgroundColor: Colors.grey[50],
+          ),
+          child: child!,
+        );
+      },
     );
     if (picked != null && picked != _deadline.value) {
       setState(() {
@@ -72,47 +101,99 @@ class _ProjectFormViewState extends State<ProjectFormView> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Scaffold(
+      backgroundColor: Colors.grey[50],
       appBar: AppBar(
-        title: Text(widget.project == null ? 'Add Project' : 'Edit Project'),
+        title: Text(
+          widget.project == null ? 'Add Project' : 'Edit Project',
+          style: GoogleFonts.poppins(
+            fontSize: 26,
+            fontWeight: FontWeight.w800,
+            letterSpacing: 0.8,
+            color: Colors.white,
+          ),
+        ),
+        centerTitle: true,
+        elevation: 0,
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                colorScheme.primary,
+                colorScheme.primary.withOpacity(0.85),
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: colorScheme.primary.withOpacity(0.3),
+                blurRadius: 12,
+                spreadRadius: 2,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+        ),
         actions: [
           if (widget.project != null)
-            IconButton(
-              icon: Icon(Icons.delete),
-              onPressed: () => _deleteProject(),
+            Transform(
+              transform: Matrix4.identity()
+                ..setEntry(3, 2, 0.001)
+                ..rotateY(0.05),
+              alignment: Alignment.center,
+              child:
+                  IconButton(
+                    icon: const Icon(
+                      Icons.delete,
+                      color: Colors.white,
+                      size: 28,
+                    ),
+                    onPressed: () => _deleteProject(),
+                  ).animate().scale(
+                    duration: 600.ms,
+                    curve: Curves.easeOutBack,
+                    begin: const Offset(0.9, 0.9),
+                  ),
             ),
         ],
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(16),
+        physics: const BouncingScrollPhysics(),
+        padding: const EdgeInsets.all(24),
         child: Form(
           key: _formKey,
           child: Column(
             children: [
-              TextFormField(
+              _buildTextField(
                 controller: _titleController,
-                decoration: InputDecoration(labelText: 'Project Title'),
+                label: 'Project Title',
                 validator: (value) =>
                     value!.isEmpty ? 'Please enter a title' : null,
-              ),
-              TextFormField(
+              ).animate().fadeIn(delay: 200.ms).slideY(begin: 0.2),
+              const SizedBox(height: 16),
+              _buildTextField(
                 controller: _clientController,
-                decoration: InputDecoration(labelText: 'Client Name'),
+                label: 'Client Name',
                 validator: (value) =>
                     value!.isEmpty ? 'Please enter client name' : null,
-              ),
+              ).animate().fadeIn(delay: 250.ms).slideY(begin: 0.2),
+              const SizedBox(height: 16),
               Obx(
-                () => SwitchListTile(
-                  title: Text(_isHourly.value ? 'Hourly Rate' : 'Fixed Amount'),
+                () => _buildSwitchTile(
+                  title: _isHourly.value ? 'Hourly Rate' : 'Fixed Amount',
                   value: _isHourly.value,
                   onChanged: (value) => _isHourly.value = value,
-                ),
+                ).animate().fadeIn(delay: 300.ms).slideY(begin: 0.2),
               ),
+              const SizedBox(height: 16),
               Obx(
                 () => _isHourly.value
-                    ? TextFormField(
+                    ? _buildTextField(
                         controller: _hourlyRateController,
-                        decoration: InputDecoration(labelText: 'Hourly Rate'),
+                        label: 'Hourly Rate',
                         keyboardType: TextInputType.number,
                         inputFormatters: [
                           FilteringTextInputFormatter.allow(
@@ -124,10 +205,10 @@ class _ProjectFormViewState extends State<ProjectFormView> {
                             : double.tryParse(value) == null
                             ? 'Enter a valid number'
                             : null,
-                      )
-                    : TextFormField(
+                      ).animate().fadeIn(delay: 350.ms).slideY(begin: 0.2)
+                    : _buildTextField(
                         controller: _fixedAmountController,
-                        decoration: InputDecoration(labelText: 'Fixed Amount'),
+                        label: 'Fixed Amount',
                         keyboardType: TextInputType.number,
                         inputFormatters: [
                           FilteringTextInputFormatter.allow(
@@ -139,15 +220,14 @@ class _ProjectFormViewState extends State<ProjectFormView> {
                             : double.tryParse(value) == null
                             ? 'Enter a valid number'
                             : null,
-                      ),
+                      ).animate().fadeIn(delay: 350.ms).slideY(begin: 0.2),
               ),
+              const SizedBox(height: 16),
               Obx(
                 () => _isHourly.value
-                    ? TextFormField(
+                    ? _buildTextField(
                         controller: _estimatedHoursController,
-                        decoration: InputDecoration(
-                          labelText: 'Estimated Hours',
-                        ),
+                        label: 'Estimated Hours',
                         keyboardType: TextInputType.number,
                         inputFormatters: [
                           FilteringTextInputFormatter.allow(
@@ -159,41 +239,381 @@ class _ProjectFormViewState extends State<ProjectFormView> {
                             : double.tryParse(value) == null
                             ? 'Enter a valid number'
                             : null,
-                      )
-                    : SizedBox(),
+                      ).animate().fadeIn(delay: 400.ms).slideY(begin: 0.2)
+                    : const SizedBox(),
               ),
+              const SizedBox(height: 16),
               Obx(
-                () => ListTile(
-                  title: Text('Deadline'),
-                  subtitle: Text(
-                    DateFormat('MMM dd, yyyy').format(_deadline.value),
-                  ),
-                  trailing: Icon(Icons.calendar_today),
+                () => _buildDateTile(
+                  title: 'Deadline',
+                  subtitle: DateFormat('MMM dd, yyyy').format(_deadline.value),
                   onTap: () => _selectDate(context),
+                ).animate().fadeIn(delay: 450.ms).slideY(begin: 0.2),
+              ),
+              const SizedBox(height: 16),
+              _buildDropdown(
+                value: _status.value,
+                items: ['Ongoing', 'Completed'],
+                label: 'Status',
+                onChanged: (value) => _status.value = value!,
+              ).animate().fadeIn(delay: 500.ms).slideY(begin: 0.2),
+              const SizedBox(height: 16),
+              _buildTextField(
+                controller: _notesController,
+                label: 'Notes',
+                maxLines: 3,
+              ).animate().fadeIn(delay: 550.ms).slideY(begin: 0.2),
+              const SizedBox(height: 28),
+              _buildSaveButton()
+                  .animate()
+                  .fadeIn(delay: 600.ms)
+                  .scale(begin: const Offset(0.9, 0.9)),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required String label,
+    TextInputType keyboardType = TextInputType.text,
+    List<TextInputFormatter>? inputFormatters,
+    String? Function(String?)? validator,
+    int maxLines = 1,
+  }) {
+    return Transform(
+      transform: Matrix4.identity()
+        ..setEntry(3, 2, 0.001)
+        ..rotateY(0.05),
+      alignment: Alignment.center,
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.white, Colors.grey[100]!.withOpacity(0.8)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.15),
+              offset: const Offset(2, 2),
+              blurRadius: 4,
+              spreadRadius: 1,
+            ),
+          ],
+        ),
+        child: TextFormField(
+          controller: controller,
+          decoration: InputDecoration(
+            labelText: label,
+            labelStyle: GoogleFonts.poppins(
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+              color: Colors.grey[700],
+            ),
+            filled: true,
+            fillColor: Colors.grey[200]!.withOpacity(0.5),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide.none,
+            ),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 14,
+            ),
+            prefixIcon: label == 'Hourly Rate' || label == 'Fixed Amount'
+                ? Icon(
+                    Icons.attach_money,
+                    color: Theme.of(context).colorScheme.primary,
+                    size: 20,
+                  )
+                : label == 'Estimated Hours'
+                ? Icon(
+                    Icons.timer,
+                    color: Theme.of(context).colorScheme.primary,
+                    size: 20,
+                  )
+                : null,
+          ),
+          keyboardType: keyboardType,
+          inputFormatters: inputFormatters,
+          validator: validator,
+          maxLines: maxLines,
+          style: GoogleFonts.poppins(
+            fontSize: 15,
+            fontWeight: FontWeight.w500,
+            color: Colors.grey[900],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSwitchTile({
+    required String title,
+    required bool value,
+    required Function(bool) onChanged,
+  }) {
+    return Transform(
+      transform: Matrix4.identity()
+        ..setEntry(3, 2, 0.001)
+        ..rotateY(0.05),
+      alignment: Alignment.center,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.white, Colors.grey[100]!.withOpacity(0.8)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.15),
+              offset: const Offset(2, 2),
+              blurRadius: 4,
+              spreadRadius: 1,
+            ),
+          ],
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+                ),
+                child: Icon(
+                  value ? Icons.attach_money : Icons.request_quote,
+                  size: 20,
+                  color: Theme.of(context).colorScheme.primary,
                 ),
               ),
-              DropdownButtonFormField<String>(
-                value: _status.value,
-                items: ['Ongoing', 'Completed']
-                    .map(
-                      (status) =>
-                          DropdownMenuItem(value: status, child: Text(status)),
-                    )
-                    .toList(),
-                onChanged: (value) => _status.value = value!,
-                decoration: InputDecoration(labelText: 'Status'),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  title,
+                  style: GoogleFonts.poppins(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.grey[900],
+                  ),
+                ),
               ),
-              TextFormField(
-                controller: _notesController,
-                decoration: InputDecoration(labelText: 'Notes'),
-                maxLines: 3,
-              ),
-              SizedBox(height: 20),
-              ElevatedButton(
-                child: Text('Save Project'),
-                onPressed: () => _saveProject(),
+              Transform.scale(
+                scale: 0.9,
+                child: Switch.adaptive(
+                  value: value,
+                  onChanged: onChanged,
+                  activeColor: Theme.of(context).colorScheme.primary,
+                  activeTrackColor: Theme.of(
+                    context,
+                  ).colorScheme.primary.withOpacity(0.3),
+                ),
               ),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDateTile({
+    required String title,
+    required String subtitle,
+    required VoidCallback onTap,
+  }) {
+    return Transform(
+      transform: Matrix4.identity()
+        ..setEntry(3, 2, 0.001)
+        ..rotateY(0.05),
+      alignment: Alignment.center,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(12),
+          onTap: onTap,
+          child: Ink(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Colors.white, Colors.grey[100]!.withOpacity(0.8)],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.15),
+                  offset: const Offset(2, 2),
+                  blurRadius: 4,
+                  spreadRadius: 1,
+                ),
+              ],
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              child: Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(6),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.primary.withOpacity(0.3),
+                    ),
+                    child: Icon(
+                      Icons.calendar_today,
+                      size: 20,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          title,
+                          style: GoogleFonts.poppins(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.grey[900],
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          subtitle,
+                          style: GoogleFonts.poppins(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.grey[700],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDropdown({
+    required String value,
+    required List<String> items,
+    required String label,
+    required Function(String) onChanged,
+  }) {
+    return Transform(
+      transform: Matrix4.identity()
+        ..setEntry(3, 2, 0.001)
+        ..rotateY(0.05),
+      alignment: Alignment.center,
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.white, Colors.grey[100]!.withOpacity(0.8)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.15),
+              offset: const Offset(2, 2),
+              blurRadius: 4,
+              spreadRadius: 1,
+            ),
+          ],
+        ),
+        child: DropdownButtonFormField<String>(
+          value: value,
+          items: items
+              .map(
+                (item) => DropdownMenuItem(
+                  value: item,
+                  child: Text(
+                    item,
+                    style: GoogleFonts.poppins(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.grey[900],
+                    ),
+                  ),
+                ),
+              )
+              .toList(),
+          onChanged: (value) => onChanged(value!),
+          decoration: InputDecoration(
+            labelText: label,
+            labelStyle: GoogleFonts.poppins(
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+              color: Colors.grey[700],
+            ),
+            filled: true,
+            fillColor: Colors.grey[200]!.withOpacity(0.5),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide.none,
+            ),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 14,
+            ),
+            prefixIcon: Icon(
+              Icons.list_alt,
+              size: 20,
+              color: Theme.of(context).colorScheme.primary,
+            ),
+          ),
+          style: GoogleFonts.poppins(
+            fontSize: 15,
+            fontWeight: FontWeight.w500,
+            color: Colors.grey[900],
+          ),
+          dropdownColor: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSaveButton() {
+    return Transform(
+      transform: Matrix4.identity()
+        ..setEntry(3, 2, 0.001)
+        ..rotateY(0.05),
+      alignment: Alignment.center,
+      child: ElevatedButton(
+        onPressed: () => _saveProject(),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Theme.of(context).colorScheme.primary,
+          foregroundColor: Colors.white,
+          padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 16),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          elevation: 0,
+          shadowColor: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+        ),
+        child: Text(
+          'Save Project',
+          style: GoogleFonts.poppins(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+            color: Colors.white,
           ),
         ),
       ),
@@ -219,47 +639,188 @@ class _ProjectFormViewState extends State<ProjectFormView> {
         deadline: _deadline.value,
         notes: _notesController.text,
         status: _status.value,
-        createdAt: widget.project?.createdAt ?? DateTime.now(),
+        createdAt: widget.project?.createdAt ?? DateTime.now().toUtc(),
         reminderEnabled: widget.project?.reminderEnabled ?? false,
       );
 
       try {
         if (widget.project == null) {
           await controller.addProject(project);
+          Get.snackbar(
+            'Success',
+            'Project added successfully.',
+            backgroundColor: Theme.of(
+              context,
+            ).colorScheme.primary.withOpacity(0.9),
+            colorText: Colors.white,
+            snackPosition: SnackPosition.TOP,
+            margin: const EdgeInsets.all(16),
+            borderRadius: 12,
+          );
         } else {
           await controller.updateProject(project);
+          Get.snackbar(
+            'Success',
+            'Project updated successfully.',
+            backgroundColor: Theme.of(
+              context,
+            ).colorScheme.primary.withOpacity(0.9),
+            colorText: Colors.white,
+            snackPosition: SnackPosition.TOP,
+            margin: const EdgeInsets.all(16),
+            borderRadius: 12,
+          );
         }
         Get.back();
       } catch (e) {
-        Get.snackbar('Error', 'Failed to save project: $e');
+        Get.snackbar(
+          'Error',
+          'Failed to save project.',
+          backgroundColor: Colors.red.withOpacity(0.9),
+          colorText: Colors.white,
+          snackPosition: SnackPosition.TOP,
+          margin: const EdgeInsets.all(16),
+          borderRadius: 12,
+        );
       }
     }
   }
 
   Future<void> _deleteProject() async {
     final confirmed = await Get.dialog(
-      AlertDialog(
-        title: Text('Delete Project'),
-        content: Text('Are you sure you want to delete this project?'),
-        actions: [
-          TextButton(
-            child: Text('Cancel'),
-            onPressed: () => Get.back(result: false),
+      Dialog(
+        backgroundColor: Colors.grey[50],
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        child: Container(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.red.withOpacity(0.3),
+                ),
+                child: Icon(
+                  Icons.delete_outline,
+                  size: 32,
+                  color: Colors.red[600],
+                ),
+              ).animate().scale(duration: 600.ms, curve: Curves.elasticOut),
+              const SizedBox(height: 16),
+              Text(
+                'Delete Project',
+                style: GoogleFonts.poppins(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.grey[900],
+                ),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                'Are you sure you want to delete this project?',
+                style: GoogleFonts.poppins(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
+                  color: Colors.grey[700],
+                  height: 1.5,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 24),
+              Row(
+                children: [
+                  Expanded(
+                    child:
+                        OutlinedButton(
+                              onPressed: () => Get.back(result: false),
+                              style: OutlinedButton.styleFrom(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 14,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                side: BorderSide(color: Colors.grey[400]!),
+                                foregroundColor: Colors.grey[900],
+                              ),
+                              child: Text(
+                                'Cancel',
+                                style: GoogleFonts.poppins(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.grey[900],
+                                ),
+                              ),
+                            )
+                            .animate()
+                            .fadeIn(delay: 200.ms)
+                            .scale(begin: const Offset(0.9, 0.9)),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child:
+                        ElevatedButton(
+                              onPressed: () => Get.back(result: true),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.red[600],
+                                foregroundColor: Colors.white,
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 14,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                elevation: 0,
+                                shadowColor: Colors.red.withOpacity(0.3),
+                              ),
+                              child: Text(
+                                'Delete',
+                                style: GoogleFonts.poppins(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            )
+                            .animate()
+                            .fadeIn(delay: 200.ms)
+                            .scale(begin: const Offset(0.9, 0.9)),
+                  ),
+                ],
+              ),
+            ],
           ),
-          TextButton(
-            child: Text('Delete'),
-            onPressed: () => Get.back(result: true),
-          ),
-        ],
+        ),
       ),
     );
 
     if (confirmed == true && widget.project != null) {
       try {
         await controller.deleteProject(widget.project!.id);
+        Get.snackbar(
+          'Success',
+          'Project deleted successfully.',
+          backgroundColor: Theme.of(
+            context,
+          ).colorScheme.primary.withOpacity(0.9),
+          colorText: Colors.white,
+          snackPosition: SnackPosition.TOP,
+          margin: const EdgeInsets.all(16),
+          borderRadius: 12,
+        );
         Get.back();
       } catch (e) {
-        Get.snackbar('Error', 'Failed to delete project: $e');
+        Get.snackbar(
+          'Error',
+          'Failed to delete project.',
+          backgroundColor: Colors.red.withOpacity(0.9),
+          colorText: Colors.white,
+          snackPosition: SnackPosition.TOP,
+          margin: const EdgeInsets.all(16),
+          borderRadius: 12,
+        );
       }
     }
   }

@@ -62,7 +62,12 @@ class EarningsController extends GetxController {
       (sum, project) => sum + project.estimatedHours,
     );
   }
-
+double get maxEarnings {
+  if (monthlyEarningsData.isEmpty) return 1000;
+  return monthlyEarningsData
+      .map((e) => e['earnings'] as double)
+      .reduce((a, b) => a > b ? a : b) * 1.2;
+}
   void _generateMonthlyEarningsData() {
     final formatter = DateFormat('MMM yyyy');
     final Map<String, double> monthlyEarnings = {};

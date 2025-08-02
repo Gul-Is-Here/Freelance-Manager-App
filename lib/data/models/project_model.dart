@@ -1,3 +1,4 @@
+import 'dart:typed_data';
 import 'package:intl/intl.dart';
 
 class Project {
@@ -13,6 +14,11 @@ class Project {
   final String status;
   final DateTime createdAt;
   final bool reminderEnabled;
+  final Uint8List? logoBytes;
+  final String? companyName;
+  final String? companyAddress;
+  final String? companyEmail;
+  final String? companyPhone;
 
   Project({
     required this.id,
@@ -27,6 +33,11 @@ class Project {
     required this.status,
     required this.createdAt,
     required this.reminderEnabled,
+    this.logoBytes,
+    this.companyName,
+    this.companyAddress,
+    this.companyEmail,
+    this.companyPhone,
   });
 
   String get formattedDeadline => DateFormat('MMM dd, yyyy').format(deadline);
@@ -47,23 +58,33 @@ class Project {
       'status': status,
       'createdAt': createdAt.toIso8601String(),
       'reminderEnabled': reminderEnabled ? 1 : 0,
+      'logoBytes': logoBytes,
+      'companyName': companyName,
+      'companyAddress': companyAddress,
+      'companyEmail': companyEmail,
+      'companyPhone': companyPhone,
     };
   }
 
   factory Project.fromMap(Map<String, dynamic> map) {
     return Project(
-      id: map['id'],
-      title: map['title'],
-      clientName: map['clientName'],
-      isHourly: map['isHourly'] == 1,
-      hourlyRate: map['hourlyRate'],
-      fixedAmount: map['fixedAmount'],
-      estimatedHours: map['estimatedHours'],
-      deadline: DateTime.parse(map['deadline']),
-      notes: map['notes'],
-      status: map['status'],
-      createdAt: DateTime.parse(map['createdAt']),
-      reminderEnabled: map['reminderEnabled'] == 1,
+      id: map['id'] as String,
+      title: map['title'] as String,
+      clientName: map['clientName'] as String,
+      isHourly: (map['isHourly'] as int) == 1,
+      hourlyRate: (map['hourlyRate'] as num).toDouble(),
+      fixedAmount: (map['fixedAmount'] as num).toDouble(),
+      estimatedHours: (map['estimatedHours'] as num).toDouble(),
+      deadline: DateTime.parse(map['deadline'] as String),
+      notes: map['notes'] as String,
+      status: map['status'] as String,
+      createdAt: DateTime.parse(map['createdAt'] as String),
+      reminderEnabled: (map['reminderEnabled'] as int) == 1,
+      logoBytes: map['logoBytes'] as Uint8List?,
+      companyName: map['companyName'] as String?,
+      companyAddress: map['companyAddress'] as String?,
+      companyEmail: map['companyEmail'] as String?,
+      companyPhone: map['companyPhone'] as String?,
     );
   }
 
@@ -80,6 +101,11 @@ class Project {
     String? status,
     DateTime? createdAt,
     bool? reminderEnabled,
+    Uint8List? logoBytes,
+    String? companyName,
+    String? companyAddress,
+    String? companyEmail,
+    String? companyPhone,
   }) {
     return Project(
       id: id ?? this.id,
@@ -94,6 +120,11 @@ class Project {
       status: status ?? this.status,
       createdAt: createdAt ?? this.createdAt,
       reminderEnabled: reminderEnabled ?? this.reminderEnabled,
+      logoBytes: logoBytes ?? this.logoBytes,
+      companyName: companyName ?? this.companyName,
+      companyAddress: companyAddress ?? this.companyAddress,
+      companyEmail: companyEmail ?? this.companyEmail,
+      companyPhone: companyPhone ?? this.companyPhone,
     );
   }
 }
