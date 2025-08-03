@@ -141,25 +141,36 @@ class InvoiceService {
           pw.Column(
             crossAxisAlignment: pw.CrossAxisAlignment.start,
             children: [
-              // Placeholder for logo
-              pw.Container(
-                width: 80,
-                height: 80,
-                decoration: pw.BoxDecoration(
-                  color: PdfColors.grey200,
-                  borderRadius: pw.BorderRadius.circular(8),
-                ),
-                child: pw.Center(
-                  child: pw.Text(
-                    'LOGO',
-                    style: pw.TextStyle(
-                      font: fontBold,
-                      fontSize: 14,
-                      color: PdfColors.grey600,
+              // Logo or placeholder
+              project.logoBytes != null
+                  ? pw.ClipRRect(
+                      horizontalRadius: 8,
+                      verticalRadius: 8,
+                      child: pw.Image(
+                        pw.MemoryImage(project.logoBytes!),
+                        width: 80,
+                        height: 80,
+                        fit: pw.BoxFit.contain,
+                      ),
+                    )
+                  : pw.Container(
+                      width: 80,
+                      height: 80,
+                      decoration: pw.BoxDecoration(
+                        color: PdfColors.grey200,
+                        borderRadius: pw.BorderRadius.circular(8),
+                      ),
+                      child: pw.Center(
+                        child: pw.Text(
+                          'LOGO',
+                          style: pw.TextStyle(
+                            font: fontBold,
+                            fontSize: 14,
+                            color: PdfColors.grey600,
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-              ),
               pw.SizedBox(height: 12),
               pw.Text(
                 project.companyName ?? 'Freelance Hub',

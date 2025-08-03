@@ -54,11 +54,10 @@ class ProjectsView extends GetView<ProjectsController> {
               ..setEntry(3, 2, 0.001)
               ..rotateY(0.05),
             alignment: Alignment.center,
-            child:
-                IconButton(
-                  icon: const Icon(Icons.add, color: Colors.white, size: 28),
-                  onPressed: controller.navigateToAddProject,
-                ).animate().scale(
+            child: IconButton(
+              icon: const Icon(Icons.add, color: Colors.white, size: 28),
+              onPressed: controller.navigateToAddProject,
+            ).animate().scale(
                   duration: 600.ms,
                   curve: Curves.easeOutBack,
                   begin: const Offset(0.9, 0.9),
@@ -73,31 +72,31 @@ class ProjectsView extends GetView<ProjectsController> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Container(
-                      width: 90,
-                      height: 90,
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [
-                            colorScheme.primary,
-                            colorScheme.primary.withOpacity(0.7),
-                          ],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                            color: colorScheme.primary.withOpacity(0.3),
-                            blurRadius: 12,
-                            spreadRadius: 2,
-                          ),
-                        ],
+                  width: 90,
+                  height: 90,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        colorScheme.primary,
+                        colorScheme.primary.withOpacity(0.7),
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: colorScheme.primary.withOpacity(0.3),
+                        blurRadius: 12,
+                        spreadRadius: 2,
                       ),
-                      child: const CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation(Colors.white),
-                        strokeWidth: 5,
-                      ),
-                    )
+                    ],
+                  ),
+                  child: const CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation(Colors.white),
+                    strokeWidth: 5,
+                  ),
+                )
                     .animate()
                     .rotate(duration: 1000.ms, curve: Curves.linear)
                     .scale(
@@ -173,9 +172,9 @@ class ProjectsView extends GetView<ProjectsController> {
                         color: Colors.grey[500],
                       ),
                     ).animate().scale(
-                      duration: 800.ms,
-                      curve: Curves.elasticOut,
-                    ),
+                          duration: 800.ms,
+                          curve: Curves.elasticOut,
+                        ),
                     const SizedBox(height: 20),
                     Text(
                       'No Projects Yet',
@@ -198,33 +197,32 @@ class ProjectsView extends GetView<ProjectsController> {
                     ),
                     const SizedBox(height: 20),
                     ElevatedButton(
-                          onPressed: controller.navigateToAddProject,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: colorScheme.primary,
-                            foregroundColor: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 28,
-                              vertical: 14,
-                            ),
-                            elevation: 0,
-                            shadowColor: colorScheme.primary.withOpacity(0.3),
-                            surfaceTintColor: Colors.transparent,
-                          ),
-                          child: Text(
-                            'Add Project',
-                            style: GoogleFonts.poppins(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.white,
-                            ),
-                          ),
-                        )
-                        .animate()
-                        .fadeIn(delay: 500.ms)
-                        .scale(begin: const Offset(0.9, 0.9)),
+                      onPressed: controller.navigateToAddProject,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: colorScheme.primary,
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 28,
+                          vertical: 14,
+                        ),
+                        elevation: 0,
+                        shadowColor: colorScheme.primary.withOpacity(0.3),
+                        surfaceTintColor: Colors.transparent,
+                      ),
+                      child: Text(
+                        'Add Project',
+                        style: GoogleFonts.poppins(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ).animate().fadeIn(delay: 500.ms).scale(
+                          begin: const Offset(0.9, 0.9),
+                        ),
                   ],
                 ),
               ),
@@ -260,11 +258,12 @@ class ProjectsView extends GetView<ProjectsController> {
   Widget _buildProjectCard(BuildContext context, Project project) {
     final isCompleted = project.status == 'Completed';
     final color = isCompleted ? Colors.green : Colors.blue;
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Transform(
       transform: Matrix4.identity()
-        ..setEntry(3, 2, 0.001) // Slight perspective for 3D effect
-        ..rotateY(0.05), // Subtle tilt
+        ..setEntry(3, 2, 0.001)
+        ..rotateY(0.05),
       alignment: Alignment.center,
       child: Material(
         color: Colors.transparent,
@@ -350,37 +349,56 @@ class ProjectsView extends GetView<ProjectsController> {
                       ],
                     ),
                   ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 8,
-                    ),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          Colors.green.withOpacity(0.2),
-                          Colors.green.withOpacity(0.1),
-                        ],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                      borderRadius: BorderRadius.circular(12),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.green.withOpacity(0.1),
-                          blurRadius: 4,
-                          offset: const Offset(0, 2),
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 8,
                         ),
-                      ],
-                    ),
-                    child: Text(
-                      '\$${project.totalAmount.toStringAsFixed(2)}',
-                      style: GoogleFonts.poppins(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w700,
-                        color: Colors.green,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              Colors.green.withOpacity(0.2),
+                              Colors.green.withOpacity(0.1),
+                            ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.green.withOpacity(0.1),
+                              blurRadius: 4,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: Text(
+                          '\$${project.totalAmount.toStringAsFixed(2)}',
+                          style: GoogleFonts.poppins(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.green,
+                          ),
+                        ),
                       ),
-                    ),
+                      const SizedBox(width: 8),
+                      Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.red.withOpacity(0.1),
+                        ),
+                        child: IconButton(
+                          icon: Icon(
+                            Icons.delete,
+                            color: Colors.red[600],
+                            size: 24,
+                          ),
+                          onPressed: () => _showDeleteConfirmation(context, project),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -388,6 +406,81 @@ class ProjectsView extends GetView<ProjectsController> {
           ),
         ),
       ),
+    );
+  }
+
+  void _showDeleteConfirmation(BuildContext context, Project project) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        final colorScheme = Theme.of(context).colorScheme;
+        return AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          backgroundColor: Colors.white,
+          title: Text(
+            'Delete Project',
+            style: GoogleFonts.poppins(
+              fontSize: 20,
+              fontWeight: FontWeight.w600,
+              color: Colors.grey[900],
+            ),
+          ),
+          content: Text(
+            'Are you sure you want to delete "${project.title}"? This action cannot be undone.',
+            style: GoogleFonts.poppins(
+              fontSize: 14,
+              fontWeight: FontWeight.w400,
+              color: Colors.grey[700],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Get.back(),
+              child: Text(
+                'Cancel',
+                style: GoogleFonts.poppins(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  color: colorScheme.primary,
+                ),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                try {
+                  await controller.deleteProject(project.id);
+                  Get.back();
+                } catch (e) {
+                  Get.snackbar(
+                    'Error',
+                    'Failed to delete project: $e',
+                    backgroundColor: Colors.red.withOpacity(0.9),
+                    colorText: Colors.white,
+                    snackPosition: SnackPosition.TOP,
+                    margin: const EdgeInsets.all(16),
+                    borderRadius: 12,
+                  );
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              child: Text(
+                'Delete',
+                style: GoogleFonts.poppins(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }

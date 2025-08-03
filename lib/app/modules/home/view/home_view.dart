@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -18,92 +20,100 @@ class HomeScreen extends GetView<HomeController> {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
-    return Scaffold(
-      backgroundColor: Colors.grey[50],
-      appBar: AppBar(
-        title: Animate(
-          effects: [
-            FadeEffect(duration: 600.ms),
-            SlideEffect(
-              begin: const Offset(0, -0.2),
-              curve: Curves.easeOutQuart,
-            ),
-          ],
-          child: Text(
-            'Freelance Hub',
-            style: GoogleFonts.poppins(
-              fontSize: 26,
-              fontWeight: FontWeight.w800,
-              letterSpacing: 0.8,
-              color: Colors.white,
-            ),
-          ),
-        ),
-        centerTitle: true,
-        elevation: 0,
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                colorScheme.primary,
-                colorScheme.primary.withOpacity(0.85),
-              ],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: colorScheme.primary.withOpacity(0.3),
-                blurRadius: 12,
-                spreadRadius: 2,
-                offset: const Offset(0, 4),
-              ),
-            ],
-          ),
-        ),
-        actions: [
-          Transform(
-            transform: Matrix4.identity()
-              ..setEntry(3, 2, 0.001)
-              ..rotateY(0.05),
-            alignment: Alignment.center,
-            child: IconButton(
-              icon: const Icon(Icons.refresh, color: Colors.white),
-              onPressed: () {
-                controller.loadProjects();
-                _showRefreshSnackbar(context);
-              },
-            ).animate().rotate(duration: 600.ms, curve: Curves.easeOutBack),
-          ),
-        ],
-      ),
-      body: Obx(() {
-        if (controller.isLoading.value) {
-          return _buildLoadingAnimation(context);
-        }
+    return Obx(
+      () => Scaffold(
+        backgroundColor: Colors.grey[50],
+        appBar: controller.currentIndex.value == 0
+            ? AppBar(
+                title: Animate(
+                  effects: [
+                    FadeEffect(duration: 600.ms),
+                    SlideEffect(
+                      begin: const Offset(0, -0.2),
+                      curve: Curves.easeOutQuart,
+                    ),
+                  ],
+                  child: Text(
+                    'Freelance Hub',
+                    style: GoogleFonts.poppins(
+                      fontSize: 26,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 0.8,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+                centerTitle: true,
+                elevation: 0,
+                flexibleSpace: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        colorScheme.primary,
+                        colorScheme.primary.withOpacity(0.85),
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: colorScheme.primary.withOpacity(0.3),
+                        blurRadius: 12,
+                        spreadRadius: 2,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                ),
+                actions: [
+                  Transform(
+                    transform: Matrix4.identity()
+                      ..setEntry(3, 2, 0.001)
+                      ..rotateY(0.05),
+                    alignment: Alignment.center,
+                    child:
+                        IconButton(
+                          icon: const Icon(Icons.refresh, color: Colors.white),
+                          onPressed: () {
+                            controller.loadProjects();
+                            _showRefreshSnackbar(context);
+                          },
+                        ).animate().rotate(
+                          duration: 600.ms,
+                          curve: Curves.easeOutBack,
+                        ),
+                  ),
+                ],
+              )
+            : null,
+        body: Obx(() {
+          if (controller.isLoading.value) {
+            return _buildLoadingAnimation(context);
+          }
 
-        return AnimatedSwitcher(
-          duration: 600.ms,
-          switchInCurve: Curves.easeOutExpo,
-          switchOutCurve: Curves.easeInExpo,
-          transitionBuilder: (child, animation) {
-            return FadeTransition(
-              opacity: animation,
-              child: SlideTransition(
-                position: Tween<Offset>(
-                  begin: const Offset(0, 0.03),
-                  end: Offset.zero,
-                ).animate(animation),
-                child: child,
-              ),
-            );
-          },
-          child: _getCurrentPage(context),
-        );
-      }),
-      bottomNavigationBar: _buildCustomNavBar(context),
-      floatingActionButton: _buildFloatingActionButton(context),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+          return AnimatedSwitcher(
+            duration: 600.ms,
+            switchInCurve: Curves.easeOutExpo,
+            switchOutCurve: Curves.easeInExpo,
+            transitionBuilder: (child, animation) {
+              return FadeTransition(
+                opacity: animation,
+                child: SlideTransition(
+                  position: Tween<Offset>(
+                    begin: const Offset(0, 0.03),
+                    end: Offset.zero,
+                  ).animate(animation),
+                  child: child,
+                ),
+              );
+            },
+            child: _getCurrentPage(context),
+          );
+        }),
+        bottomNavigationBar: _buildCustomNavBar(context),
+        floatingActionButton: _buildFloatingActionButton(context),
+        // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      ),
     );
   }
 
@@ -799,32 +809,30 @@ class HomeScreen extends GetView<HomeController> {
   Widget _buildCustomNavBar(BuildContext context) {
     return Transform(
       transform: Matrix4.identity()
-        ..setEntry(3, 2, 0.001) // Slight perspective for 3D effect
-        ..rotateY(0.05), // Subtle tilt
+        ..setEntry(3, 2, 0.001)
+        ..rotateY(0.05),
       alignment: Alignment.center,
       child: Container(
+        margin: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.white, Colors.grey[50]!.withOpacity(0.9)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: Colors.white.withOpacity(0.4), width: 1),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.15),
-              blurRadius: 12,
-              spreadRadius: 1,
-              offset: const Offset(0, -2),
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
             ),
           ],
         ),
-        child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(20),
+          child: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   _buildNavItem(
                     0,
@@ -840,7 +848,6 @@ class HomeScreen extends GetView<HomeController> {
                     'Projects',
                     context,
                   ),
-                  const SizedBox(width: 56), // Space for FAB
                   _buildNavItem(
                     2,
                     Icons.calculate_outlined,
@@ -857,8 +864,8 @@ class HomeScreen extends GetView<HomeController> {
                   ),
                   _buildNavItem(
                     4,
-                    Icons.analytics_outlined,
-                    Icons.analytics,
+                    Icons.settings_outlined,
+                    Icons.settings,
                     'Settings',
                     context,
                   ),

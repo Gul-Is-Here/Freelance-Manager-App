@@ -1,4 +1,5 @@
 import 'package:frelance_calculator_app/app/modules/home/view/settings_view.dart';
+import 'package:frelance_calculator_app/app/modules/home/view/splash_screen.dart';
 import 'package:get/get.dart';
 import '../modules/home/binding/calculator_binding.dart';
 import '../modules/home/binding/earnings_binding.dart';
@@ -18,9 +19,14 @@ part 'app_routes.dart';
 class AppPages {
   AppPages._();
 
-  static const INITIAL = Routes.HOME;
+  static const INITIAL = Routes.SPLASH;
 
   static final routes = [
+    GetPage(
+      name: _Paths.SPLASH,
+      page: () => SplashScreen(),
+      // binding: HomeBinding(),
+    ),
     GetPage(
       name: _Paths.HOME,
       page: () => HomeScreen(),
