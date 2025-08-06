@@ -4,8 +4,8 @@ import 'package:get/get.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
-import '../../../../../data/models/project_model.dart';
-import '../../controllers/projects_controller.dart';
+import '../../../../data/models/project_model.dart';
+import '../controller/projects_controller.dart';
 import 'dart:math' show pi;
 
 class ProjectFormView extends StatefulWidget {
@@ -657,6 +657,8 @@ class _ProjectFormViewState extends State<ProjectFormView> {
             margin: const EdgeInsets.all(16),
             borderRadius: 12,
           );
+          await controller.loadProjects();
+          Navigator.of(context).pop();
         } else {
           await controller.updateProject(project);
           Get.snackbar(
@@ -762,7 +764,10 @@ class _ProjectFormViewState extends State<ProjectFormView> {
                   Expanded(
                     child:
                         ElevatedButton(
-                              onPressed: () => Get.back(result: true),
+                              onPressed: () {
+                                Get.back(result: true);
+                                Navigator.of(context).pop();
+                              },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.red[600],
                                 foregroundColor: Colors.white,
@@ -810,7 +815,7 @@ class _ProjectFormViewState extends State<ProjectFormView> {
           margin: const EdgeInsets.all(16),
           borderRadius: 12,
         );
-        Get.back();
+        Navigator.of(context).pop();
       } catch (e) {
         Get.snackbar(
           'Error',

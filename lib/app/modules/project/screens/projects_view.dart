@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../../../../data/models/project_model.dart';
-import '../../controllers/projects_controller.dart';
+import '../../../../data/models/project_model.dart';
+import '../controller/projects_controller.dart';
 import 'dart:math' show pi;
 
 class ProjectsView extends GetView<ProjectsController> {

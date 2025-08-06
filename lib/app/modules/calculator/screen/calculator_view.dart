@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../controllers/calculator_controller.dart';
+import '../controller/calculator_controller.dart';
 import 'dart:math' show pi;
 
 class CalculatorView extends GetView<CalculatorController> {

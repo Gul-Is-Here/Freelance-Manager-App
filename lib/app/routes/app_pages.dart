@@ -1,18 +1,18 @@
-import 'package:frelance_calculator_app/app/modules/home/view/settings_view.dart';
-import 'package:frelance_calculator_app/app/modules/home/view/splash_screen.dart';
+import 'package:frelance_calculator_app/app/modules/settings/screens/settings_view.dart';
+import 'package:frelance_calculator_app/splash_screen.dart';
 import 'package:get/get.dart';
-import '../modules/home/binding/calculator_binding.dart';
-import '../modules/home/binding/earnings_binding.dart';
-import '../modules/home/binding/home_binding.dart';
-import '../modules/home/binding/projects_binding.dart';
-import '../modules/home/binding/settings_binding.dart';
+import '../modules/calculator/bindings/calculator_binding.dart';
+import '../modules/earnings/bindings/earnings_binding.dart';
+import '../modules/home/home/bindings/home_binding.dart';
+import '../modules/project/bindings/projects_binding.dart';
+import '../modules/settings/bindings/settings_binding.dart';
 
-import '../modules/home/view/calculator_view.dart';
-import '../modules/home/view/earnings_view.dart';
-import '../modules/home/view/home_view.dart';
-import '../modules/home/view/project/project_detail_view.dart';
-import '../modules/home/view/project/project_form_view.dart';
-import '../modules/home/view/project/projects_view.dart';
+import '../modules/calculator/screen/calculator_view.dart';
+import '../modules/earnings/screens/earnings_view.dart';
+import '../modules/home/home/screens/home_view.dart';
+import '../modules/project/screens/project_detail_view.dart';
+import '../modules/project/screens/project_form_view.dart';
+import '../modules/project/screens/projects_view.dart';
 
 part 'app_routes.dart';
 

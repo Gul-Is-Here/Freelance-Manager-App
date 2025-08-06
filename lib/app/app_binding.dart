@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
-import '../../../../data/services/database_service.dart';
-import '../../../../data/services/invoice_service.dart';
-import '../../../../data/services/local_storage_service.dart';
+import '../data/services/database_service.dart';
+import '../data/services/invoice_service.dart';
+import '../data/services/local_storage_service.dart';
 
 class AppBinding implements Bindings {
   @override

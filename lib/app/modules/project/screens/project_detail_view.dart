@@ -5,9 +5,9 @@ import 'package:get/get.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
-import '../../../../../data/models/project_model.dart';
-import '../../../../../data/services/invoice_service.dart';
-import '../../controllers/projects_controller.dart';
+import '../../../../data/models/project_model.dart';
+import '../../../../data/services/invoice_service.dart';
+import '../controller/projects_controller.dart';
 import 'dart:math' show pi;
 
 class ProjectDetailView extends StatelessWidget {
@@ -45,7 +45,9 @@ class ProjectDetailView extends StatelessWidget {
 
         if (image != null) {
           final bytes = await image.readAsBytes();
-          final updatedProject = projectsController.project.value?.copyWith(logoBytes: bytes) ?? project.copyWith(logoBytes: bytes);
+          final updatedProject =
+              projectsController.project.value?.copyWith(logoBytes: bytes) ??
+              project.copyWith(logoBytes: bytes);
           await projectsController.updateProject(updatedProject);
           Get.snackbar(
             'Success',
@@ -73,12 +75,14 @@ class ProjectDetailView extends StatelessWidget {
     Future<void> _saveCompanyDetails() async {
       if (_formKey.currentState!.validate()) {
         try {
-          final updatedProject = projectsController.project.value?.copyWith(
+          final updatedProject =
+              projectsController.project.value?.copyWith(
                 companyName: _companyNameController.text,
                 companyAddress: _companyAddressController.text,
                 companyEmail: _companyEmailController.text,
                 companyPhone: _companyPhoneController.text,
-              ) ?? project.copyWith(
+              ) ??
+              project.copyWith(
                 companyName: _companyNameController.text,
                 companyAddress: _companyAddressController.text,
                 companyEmail: _companyEmailController.text,
@@ -148,10 +152,14 @@ class ProjectDetailView extends StatelessWidget {
               ..setEntry(3, 2, 0.001)
               ..rotateY(0.05),
             alignment: Alignment.center,
-            child: IconButton(
-              icon: const Icon(Icons.edit, color: Colors.white, size: 28),
-              onPressed: () => Get.toNamed('/projects/form', arguments: projectsController.project.value ?? project),
-            ).animate().scale(
+            child:
+                IconButton(
+                  icon: const Icon(Icons.edit, color: Colors.white, size: 28),
+                  onPressed: () => Get.toNamed(
+                    '/projects/form',
+                    arguments: projectsController.project.value ?? project,
+                  ),
+                ).animate().scale(
                   duration: 600.ms,
                   curve: Curves.easeOutBack,
                   begin: const Offset(0.9, 0.9),
@@ -167,35 +175,34 @@ class ProjectDetailView extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Obx(() => _buildHeaderSection(context))
-                  .animate()
-                  .fadeIn(delay: 200.ms)
-                  .slideY(begin: 0.2),
+              Obx(
+                () => _buildHeaderSection(context),
+              ).animate().fadeIn(delay: 200.ms).slideY(begin: 0.2),
               const SizedBox(height: 28),
-              Obx(() => _buildLogoSection(
-                    context,
-                    _pickLogo,
-                    projectsController.project.value ?? project,
-                  )).animate().fadeIn(delay: 250.ms).slideY(begin: 0.2),
+              Obx(
+                () => _buildLogoSection(
+                  context,
+                  _pickLogo,
+                  projectsController.project.value ?? project,
+                ),
+              ).animate().fadeIn(delay: 250.ms).slideY(begin: 0.2),
               const SizedBox(height: 28),
-              Obx(() => _buildCompanyDetailsSection(
-                    context,
-                    _companyNameController,
-                    _companyAddressController,
-                    _companyEmailController,
-                    _companyPhoneController,
-                    _saveCompanyDetails,
-                  )).animate().fadeIn(delay: 300.ms).slideY(begin: 0.2),
+              _buildCompanyDetailsSection(
+                context,
+                _companyNameController,
+                _companyAddressController,
+                _companyEmailController,
+                _companyPhoneController,
+                _saveCompanyDetails,
+              ).animate().fadeIn(delay: 300.ms).slideY(begin: 0.2),
               const SizedBox(height: 28),
-              Obx(() => _buildDetailsSection(context))
-                  .animate()
-                  .fadeIn(delay: 350.ms)
-                  .slideY(begin: 0.2),
+              Obx(
+                () => _buildDetailsSection(context),
+              ).animate().fadeIn(delay: 350.ms).slideY(begin: 0.2),
               const SizedBox(height: 28),
-              Obx(() => _buildNotesSection(context))
-                  .animate()
-                  .fadeIn(delay: 400.ms)
-                  .slideY(begin: 0.2),
+              Obx(
+                () => _buildNotesSection(context),
+              ).animate().fadeIn(delay: 400.ms).slideY(begin: 0.2),
               const SizedBox(height: 28),
               Obx(() => _buildInvoiceButton(context))
                   .animate()
@@ -258,7 +265,9 @@ class ProjectDetailView extends StatelessWidget {
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.primary.withOpacity(0.3),
                   ),
                   child: Icon(
                     Icons.person_outline,
@@ -286,7 +295,10 @@ class ProjectDetailView extends StatelessWidget {
   }
 
   Widget _buildLogoSection(
-      BuildContext context, VoidCallback onPickLogo, Project currentProject) {
+    BuildContext context,
+    VoidCallback onPickLogo,
+    Project currentProject,
+  ) {
     return Transform(
       transform: Matrix4.identity()
         ..setEntry(3, 2, 0.001)
@@ -363,34 +375,38 @@ class ProjectDetailView extends StatelessWidget {
                 ),
                 const SizedBox(width: 16),
                 Expanded(
-                  child: ElevatedButton.icon(
-                    icon: Icon(Icons.upload, size: 20, color: Colors.white),
-                    label: Text(
-                      currentProject.logoBytes != null
-                          ? 'Change Logo'
-                          : 'Upload Logo',
-                      style: GoogleFonts.poppins(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
-                      ),
-                    ),
-                    onPressed: onPickLogo,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Theme.of(context).colorScheme.primary,
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 12,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      elevation: 0,
-                      shadowColor:
-                          Theme.of(context).colorScheme.primary.withOpacity(0.3),
-                    ),
-                  ).animate().scale(
+                  child:
+                      ElevatedButton.icon(
+                        icon: Icon(Icons.upload, size: 20, color: Colors.white),
+                        label: Text(
+                          currentProject.logoBytes != null
+                              ? 'Change Logo'
+                              : 'Upload Logo',
+                          style: GoogleFonts.poppins(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                          ),
+                        ),
+                        onPressed: onPickLogo,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Theme.of(
+                            context,
+                          ).colorScheme.primary,
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 12,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          elevation: 0,
+                          shadowColor: Theme.of(
+                            context,
+                          ).colorScheme.primary.withOpacity(0.3),
+                        ),
+                      ).animate().scale(
                         duration: 600.ms,
                         curve: Curves.easeOutBack,
                         begin: const Offset(0.9, 0.9),
@@ -507,31 +523,33 @@ class ProjectDetailView extends StatelessWidget {
             const SizedBox(height: 16),
             Align(
               alignment: Alignment.centerRight,
-              child: ElevatedButton(
-                onPressed: onSave,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Theme.of(context).colorScheme.primary,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 20,
-                    vertical: 12,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  elevation: 0,
-                  shadowColor:
-                      Theme.of(context).colorScheme.primary.withOpacity(0.3),
-                ),
-                child: Text(
-                  'Save Details',
-                  style: GoogleFonts.poppins(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
-                  ),
-                ),
-              ).animate().scale(
+              child:
+                  ElevatedButton(
+                    onPressed: onSave,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Theme.of(context).colorScheme.primary,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 12,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      elevation: 0,
+                      shadowColor: Theme.of(
+                        context,
+                      ).colorScheme.primary.withOpacity(0.3),
+                    ),
+                    child: Text(
+                      'Save Details',
+                      style: GoogleFonts.poppins(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ).animate().scale(
                     duration: 600.ms,
                     curve: Curves.easeOutBack,
                     begin: const Offset(0.9, 0.9),
@@ -806,12 +824,12 @@ class ProjectDetailView extends StatelessWidget {
                   size: 20,
                 )
               : label == 'Company Phone'
-                  ? Icon(
-                      Icons.phone,
-                      color: Theme.of(context).colorScheme.primary,
-                      size: 20,
-                    )
-                  : null,
+              ? Icon(
+                  Icons.phone,
+                  color: Theme.of(context).colorScheme.primary,
+                  size: 20,
+                )
+              : null,
         ),
         keyboardType: keyboardType,
         inputFormatters: inputFormatters,

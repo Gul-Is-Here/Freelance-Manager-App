@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import '../controllers/earnings_controller.dart';
+import '../controller/earnings_controller.dart';
 
 class EarningsBinding extends Bindings {
   @override

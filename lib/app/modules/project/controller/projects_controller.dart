@@ -33,16 +33,17 @@ class ProjectsController extends GetxController {
     if (project.reminderEnabled && project.deadline.isAfter(DateTime.now())) {
       const AndroidNotificationDetails androidPlatformChannelSpecifics =
           AndroidNotificationDetails(
-        'project_reminders',
-        'Project Reminders',
-        channelDescription: 'Notifications for project deadlines',
-        importance: Importance.high,
-        priority: Priority.high,
-        showWhen: false,
-      );
+            'project_reminders',
+            'Project Reminders',
+            channelDescription: 'Notifications for project deadlines',
+            importance: Importance.high,
+            priority: Priority.high,
+            showWhen: false,
+          );
 
-      final NotificationDetails platformChannelSpecifics =
-          NotificationDetails(android: androidPlatformChannelSpecifics);
+      final NotificationDetails platformChannelSpecifics = NotificationDetails(
+        android: androidPlatformChannelSpecifics,
+      );
 
       await _notificationsPlugin.zonedSchedule(
         project.id.hashCode,
@@ -77,11 +78,16 @@ class ProjectsController extends GetxController {
 
   Future<void> addProject(Project project) async {
     try {
+      print('Adding project: ${project.toMap()}');
       final db = await _databaseService.database;
       await db.insert('projects', project.toMap());
       await loadProjects();
+      if (project.reminderEnabled) {
+        await scheduleProjectReminder(project); // Schedule reminder if enabled
+      }
       Get.snackbar('Success', 'Project added successfully');
     } catch (e) {
+      print('Error adding project: $e');
       Get.snackbar('Error', 'Failed to add project: $e');
       throw e;
     }
@@ -89,6 +95,7 @@ class ProjectsController extends GetxController {
 
   Future<void> updateProject(Project updatedProject) async {
     try {
+      print('Updating project: ${updatedProject.toMap()}');
       final db = await _databaseService.database;
       await db.update(
         'projects',
@@ -96,17 +103,21 @@ class ProjectsController extends GetxController {
         where: 'id = ?',
         whereArgs: [updatedProject.id],
       );
-      // Update the observable project if it's the same project
       if (project.value?.id == updatedProject.id) {
         project.value = updatedProject;
       }
-      // Update the projects list directly instead of reloading from DB
       final index = projects.indexWhere((p) => p.id == updatedProject.id);
       if (index != -1) {
         projects[index] = updatedProject;
       }
+      if (updatedProject.reminderEnabled) {
+        await scheduleProjectReminder(updatedProject); // Update reminder
+      } else {
+        await cancelProjectReminder(updatedProject.id); // Cancel if disabled
+      }
       Get.snackbar('Success', 'Project updated successfully');
     } catch (e) {
+      print('Error updating project: $e');
       Get.snackbar('Error', 'Failed to update project: $e');
       throw e;
     }
@@ -115,11 +126,7 @@ class ProjectsController extends GetxController {
   Future<void> deleteProject(String id) async {
     try {
       final db = await _databaseService.database;
-      await db.delete(
-        'projects',
-        where: 'id = ?',
-        whereArgs: [id],
-      );
+      await db.delete('projects', where: 'id = ?', whereArgs: [id]);
       if (project.value?.id == id) {
         project.value = null; // Clear the current project if deleted
       }

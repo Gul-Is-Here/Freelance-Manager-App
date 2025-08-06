@@ -1,8 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.freelance_manager.app">
+    package="com.freelance_manager_calculator.app">
 
     <application
-        android:label="frelance_calculator_app"
+        android:label="Freelancer Hub"
         android:icon="@mipmap/ic_launcher">
 
         <activity

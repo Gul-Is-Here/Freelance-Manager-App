@@ -1,24 +1,38 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:frelance_calculator_app/app/modules/project/controller/projects_controller.dart';
 import 'package:get/get.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../../../data/models/project_model.dart';
-import '../controllers/home_controller.dart';
-import 'calculator_view.dart';
-import 'earnings_view.dart' show EarningsView;
-import 'project/projects_view.dart';
-import 'settings_view.dart' show SettingsView;
+import '../../../../../data/models/project_model.dart';
+import '../controller/home_controller.dart';
+import '../../../calculator/screen/calculator_view.dart';
+import '../../../earnings/screens/earnings_view.dart' show EarningsView;
+import '../../../project/screens/projects_view.dart';
+import '../../../settings/screens/settings_view.dart' show SettingsView;
 import 'dart:math' show pi;
 
-class HomeScreen extends GetView<HomeController> {
-  const HomeScreen({super.key});
+class HomeScreen extends StatefulWidget {
+  HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  final controller = Get.put(HomeController());
+  @override
+  void initState() {
+    controller.loadProjects();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    Get.put(ProjectsController());
 
     return Obx(
       () => Scaffold(

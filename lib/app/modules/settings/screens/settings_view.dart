@@ -3,8 +3,8 @@ import 'package:get/get.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
-import '../controllers/settings_controller.dart';
-import '../controllers/theme_controller.dart';
+import '../controller/settings_controller.dart';
+import '../../home/home/controller/theme_controller.dart';
 
 class SettingsView extends GetView<SettingsController> {
   const SettingsView({super.key});

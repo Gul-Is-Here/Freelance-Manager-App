@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../app/modules/home/controllers/calculator_controller.dart';
-import '../app/modules/home/controllers/earnings_controller.dart';
-import '../app/modules/home/controllers/home_controller.dart';
-import '../app/modules/home/controllers/projects_controller.dart';
-import '../app/modules/home/controllers/settings_controller.dart';
+import '../app/modules/calculator/controller/calculator_controller.dart';
+import '../app/modules/earnings/controller/earnings_controller.dart';
+import '../app/modules/home/home/controller/home_controller.dart';
+import '../app/modules/project/controller/projects_controller.dart';
+import '../app/modules/settings/controller/settings_controller.dart';
 
 class CustomNavBar extends StatelessWidget {
   final HomeController controller;

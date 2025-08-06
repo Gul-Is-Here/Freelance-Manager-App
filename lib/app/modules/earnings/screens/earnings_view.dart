@@ -5,7 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import '../../../../data/models/project_model.dart';
-import '../controllers/earnings_controller.dart';
+import '../controller/earnings_controller.dart';
 import 'dart:math' show pi;
 
 class EarningsView extends GetView<EarningsController> {

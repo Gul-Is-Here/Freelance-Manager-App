@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 
-import '../../../../data/models/project_model.dart';
-import '../../../../data/services/database_service.dart';
+import '../../../../../data/models/project_model.dart';
+import '../../../../../data/services/database_service.dart';
 
 class HomeController extends GetxController {
   var currentIndex = 0.obs;
