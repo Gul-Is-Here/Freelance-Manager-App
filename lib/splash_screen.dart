@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-
 class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key});
 
@@ -90,7 +89,7 @@ class SplashScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 24),
                   Text(
-                    'Freelance Hub',
+                    'Freelance Helper',
                     style: GoogleFonts.poppins(
                       fontSize: 36,
                       fontWeight: FontWeight.w800,

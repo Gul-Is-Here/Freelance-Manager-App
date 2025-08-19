@@ -48,7 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ],
                   child: Text(
-                    'Freelance Hub',
+                    'Freelance Helper',
                     style: GoogleFonts.poppins(
                       fontSize: 26,
                       fontWeight: FontWeight.w800,
@@ -201,9 +201,9 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ).animate().fadeIn(duration: 400.ms).slideY(begin: 0.1),
         Text(
-          'Freelancer!',
+          'Ultimate Freelancer!',
           style: GoogleFonts.poppins(
-            fontSize: 34,
+            fontSize: 26,
             fontWeight: FontWeight.w800,
             color: Theme.of(context).colorScheme.primary,
             height: 1.1,

@@ -1,4 +1,4 @@
-package com.freelance_manager_calculator.app
+package com.softpac.dashlane
 
 import io.flutter.embedding.android.FlutterFragmentActivity
 

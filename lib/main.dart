@@ -41,7 +41,7 @@ class MyApp extends StatelessWidget {
       darkTheme: ThemeData.dark().copyWith(
         primaryColor: const Color.fromARGB(255, 21, 22, 22),
         colorScheme: const ColorScheme.dark(
-          primary: Color.fromARGB(255, 44, 46, 45),
+          primary: Color(0xFF145DB2),
           secondary: Color(0xFF00FFA3),
           surface: Color(0xFF121212),
         ),

@@ -11,12 +11,12 @@ if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(FileInputStream(keystorePropertiesFile))
 }
 android {
-    namespace = "com.freelance_manager_calculator.app"
+    namespace = "com.softpac.dashlane"
     compileSdk = 36
     ndkVersion = "27.0.12077973"
 
     defaultConfig {
-        applicationId = "com.freelance_manager_calculator.app"
+        applicationId = "com.softpac.dashlane"
         minSdk = 23
         targetSdk = 36
         versionCode = flutter.versionCode

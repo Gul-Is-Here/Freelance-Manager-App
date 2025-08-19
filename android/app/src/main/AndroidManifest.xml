@@ -1,8 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.freelance_manager_calculator.app">
+    package="com.softpac.dashlane">
 
     <application
-        android:label="Freelancer Hub"
+        android:label="Ultimate Freelancer"
         android:icon="@mipmap/ic_launcher">
 
         <activity

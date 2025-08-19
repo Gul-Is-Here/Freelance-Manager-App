@@ -94,17 +94,17 @@ class ThemeController extends GetxController {
     switch (theme) {
       case 'pink':
         return ThemeData.light().copyWith(
-          primaryColor: Colors.pink,
+          primaryColor: Color(0xFF145DB2),
           colorScheme: ColorScheme.light(
-            primary: Colors.pink,
-            secondary: Colors.pinkAccent,
+            primary: Color(0xFF145DB2),
+            secondary: Color(0xFF145DB2),
             surface: Colors.pink[50]!,
           ),
           scaffoldBackgroundColor: Colors.pink[50],
           appBarTheme: AppBarTheme(
             elevation: 0,
             centerTitle: true,
-            backgroundColor: Colors.pink,
+            backgroundColor: Color(0xFF145DB2),
             titleTextStyle: TextStyle(
               color: Colors.white,
               fontSize: 20,
@@ -114,7 +114,7 @@ class ThemeController extends GetxController {
           ),
           elevatedButtonTheme: ElevatedButtonThemeData(
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.pink,
+              backgroundColor: Color(0xFF145DB2),
               foregroundColor: Colors.white,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
@@ -131,7 +131,7 @@ class ThemeController extends GetxController {
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: Colors.pinkAccent, width: 2),
+              borderSide: BorderSide(color: Color(0xFF145DB2), width: 2),
             ),
             contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           ),
@@ -203,9 +203,9 @@ class ThemeController extends GetxController {
         );
       default:
         return ThemeData.light().copyWith(
-          primaryColor: Colors.redAccent,
+          primaryColor: Color(0xFF145DB2),
           colorScheme: ColorScheme.light(
-            primary: Colors.redAccent,
+            primary: Color(0xFF145DB2),
             secondary: Colors.redAccent,
             // surface: Colors.redAccent[50]!,
           ),
@@ -213,7 +213,7 @@ class ThemeController extends GetxController {
           appBarTheme: AppBarTheme(
             elevation: 0,
             centerTitle: true,
-            backgroundColor: Colors.redAccent,
+            backgroundColor: Color(0xFF145DB2),
             titleTextStyle: TextStyle(
               color: Colors.white,
               fontSize: 20,
@@ -223,7 +223,7 @@ class ThemeController extends GetxController {
           ),
           elevatedButtonTheme: ElevatedButtonThemeData(
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.redAccent,
+              backgroundColor: Color(0xFF145DB2),
               foregroundColor: Colors.white,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
@@ -240,7 +240,7 @@ class ThemeController extends GetxController {
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: Colors.red, width: 2),
+              borderSide: BorderSide(color: Color(0xFF145DB2), width: 2),
             ),
             contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           ),
